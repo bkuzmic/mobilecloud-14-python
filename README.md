@@ -1,6 +1,7 @@
 mobilecloud-14-python
 =====================
 
-Source code in Python for Programming Cloud Services for Android Handheld Systems Course
+Alternative source code in *Python* for the course code examples of the
+*Programming Cloud Services for Android Handheld Systems* coursera class.
 
 Written for Python 2.7
