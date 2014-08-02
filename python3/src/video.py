@@ -1,5 +1,5 @@
 
-""" Python example of a web server that keeps an in-memory list of videos.
+"""Python example of a web server that keeps an in-memory list of videos.
 The server allows for videos to be added with POST requests, and clients can
 have access to the list of videos itself through a GET request.
 """
@@ -14,7 +14,7 @@ import cgi
 
 
 class Video:
-    """ Data representation class for videos. """
+    """Data representation class for videos."""
     def __init__(self, name, url, duration):
         self.name = name
         self.url = url
@@ -28,13 +28,13 @@ class Video:
 
 
 class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
-    """ Class to handle the HTTP requests coming to the server. """
+    """Class to handle the HTTP requests coming to the server."""
 
     # In-memory list of videos added to the server
     videos = []
 
     def request_parameters(self):
-        """ Return a dictionary with parameters from both the URL query string
+        """Return a dictionary with parameters from both the URL query string
         and the url encoded form body.
         """
         request_parameters = {}
@@ -72,10 +72,10 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return request_parameters
 
     class VideoHandler:
-        """ Class to handle the HTTP requests to the resource /video. """
+        """Class to handle the HTTP requests to the resource /video."""
         @staticmethod
         def do_GET(handler):
-            """ Handle GET requests to /video. """
+            """Handle GET requests to /video."""
             # Fill the HTTP response with the appropriate headers
             handler.send_response(200)
             handler.send_header('Content-type', 'text/plain')
@@ -87,7 +87,7 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         @staticmethod
         def do_POST(handler):
-            """ Handle POST requests to /video. """
+            """Handle POST requests to /video."""
             # Get a dictionary with the HTTP request parameters
             request_parameters = handler.request_parameters()
 
@@ -116,10 +116,10 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
     class HTMLVideoHandler:
-        """ Class to handle the HTTP requests to the resource /view/video. """
+        """Class to handle the HTTP requests to the resource /view/video."""
         @staticmethod
         def do_GET(handler):
-            """ Handle GET requests to /view/video. """
+            """Handle GET requests to /view/video."""
             # Fill the response header
             handler.send_response(200)
             handler.send_header('Content-type', 'text/html')
@@ -147,12 +147,12 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             handler.wfile.write(ui_form.encode())
 
             # Print out the videos saved in the server
-            for video in videos:
+            for video in VideoHTTPRequestHandler.videos:
                 handler.wfile.write(video.encode())
 
         @staticmethod
         def do_POST(handler):
-            """ Handle POST requests to /view/video. """
+            """Handle POST requests to /view/video."""
             # Get a dictionary with the HTTP request parameters
             request_parameters = handler.request_parameters()
 
@@ -171,14 +171,13 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             else:
                 # With the validated data we can commit the new video to memory
                 video = Video(name, url, duration)
-                # VideoHTTPRequestHandler.videos.append(video)
-                videos.append(video)
+                VideoHTTPRequestHandler.videos.append(video)
 
                 # Return the user to the page with the form
                 VideoHTTPRequestHandler.HTMLVideoHandler.do_GET(handler)
 
     def do_GET(self):
-        """ Handle every GET request directed to the server. """
+        """Handle every GET request directed to the server."""
         # Make sure the client gets a 404 for any resource different from
         # '/video' or '/view/video'.
         urlparse_tuple = urllib.parse.urlparse(self.path)
@@ -193,7 +192,7 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_error(404)
 
     def do_POST(self):
-        """ Handle every POST request directed to the server. """
+        """Handle every POST request directed to the server."""
         # Sends 404 for any resource different from '/video' or '/view/video'
         urlparse_tuple = urllib.parse.urlparse(self.path)
 
@@ -209,7 +208,6 @@ class VideoHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     SERVER_ADDRESS = ("localhost", 8080)
-    videos = []
 
     # The constructor of HTTPServer receives a tuple containing the server's
     # address and port, and a RequestHandlerClass to which the HTTP requests
@@ -222,6 +220,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print('..interrupted')
 
-    server.server_close()
+    server.shutdown()
 
 
