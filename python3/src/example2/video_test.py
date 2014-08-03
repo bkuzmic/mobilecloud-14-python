@@ -20,11 +20,11 @@ class TestVideoServer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Start the server on a separate thread and sleep for one second while
-        # it starts up
+        # Start the server on a separate thread and sleep for a tenth of a
+        # second while it starts up
         cls.server = TestVideoServer.ServerThread()
         cls.server.start()
-        time.sleep(1)
+        time.sleep(.1)
 
     @classmethod
     def tearDownClass(cls):
@@ -77,6 +77,7 @@ class TestVideoServer(unittest.TestCase):
         connection = self.executeVideoHTTPRequest()
         responseBody = connection.getresponse().read().decode().strip()
         returnedVideos = responseBody.split('\n')
+        connection.close()
 
         # Assert the inserted video is in the returned list of videos
         expectedVideoDescription = name + ' : ' + url
@@ -92,8 +93,8 @@ class TestVideoServer(unittest.TestCase):
 
         # Get HTTPConnection for the POST request
         connection = self.executeVideoHTTPRequest('POST', name, url, duration)
-
         httpResponse = connection.getresponse()
+        connection.close()
 
         # Assert server returns a 400 bad request
         self.assertEqual(400, httpResponse.getcode())
